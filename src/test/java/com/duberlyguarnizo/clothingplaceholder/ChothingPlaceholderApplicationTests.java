@@ -1,4 +1,4 @@
-package com.duberlyguarnizo.cholthingplaceholder;
+package com.duberlyguarnizo.clothingplaceholder;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
