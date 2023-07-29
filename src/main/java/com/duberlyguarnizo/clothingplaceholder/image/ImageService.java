@@ -30,25 +30,6 @@ public class ImageService {
         this.imageRepository = imageRepository;
     }
 
-    Optional<Long> saveImage(ImageCreationDto imageCreationDto) {
-        String uploadDir = "/images/uploads/";
-        try {
-            Files.createDirectories(Paths.get(uploadDir));
-            String filename = imageCreationDto.name() + ".png";
-            Path filePath = Paths.get(uploadDir + filename);
-            Files.write(filePath, imageCreationDto.imageBlob().getBytes());
-            Image savedImage = Image.builder()
-                    .name(imageCreationDto.name())
-                    .path(filePath.toString())
-                    .build();
-            return Optional.of(imageRepository.save(savedImage).getId());
-
-        } catch (IOException e) {
-            log.warn("Could not save the image with name " + imageCreationDto.name() + ". Reason: " + e.getMessage());
-            return Optional.empty();
-        }
-    }
-
     Optional<ImageQueryDto> getImage(Long id, int w, int h, int p, String c, String r) {
         var possibleImage = imageRepository.findById(id);
         if (possibleImage.isPresent()) {
@@ -66,7 +47,7 @@ public class ImageService {
         return Optional.empty();
     }
 
-    Optional<BufferedImage> getImageFromDisk(String path) {
+    private Optional<BufferedImage> getImageFromDisk(String path) {
         try {
             String imageFolder = "/images/uploads/";
             String filePath = imageFolder + path;
@@ -81,4 +62,6 @@ public class ImageService {
         }
 
     }
+    // TODO: 29/07/2023 Create method for image processing
 }
+
