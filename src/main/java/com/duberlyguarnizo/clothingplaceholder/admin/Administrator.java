@@ -11,8 +11,10 @@ package com.duberlyguarnizo.clothingplaceholder.admin;
 
 import com.duberlyguarnizo.clothingplaceholder.audit.AuditableEntity;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import org.hibernate.annotations.NaturalId;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,19 +25,26 @@ import java.util.Collections;
 
 @Getter
 @Setter
-@Entity
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity(name = "Administrator")
+@Table(name = "administrator")
+@SQLDelete(sql = "UPDATE administrator SET deleted = true WHERE id = ? AND version = ?")
+@Where(clause = "deleted = false")
 public class Administrator extends AuditableEntity implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    Long id;
-    String name;
-    String lastName;
-    String username;
-    String password;
+    private Long id;
+    private String name;
+    private String lastName;
+    @NaturalId
+    private String username;
+    private String password;
     @Serial
     private static final long serialVersionUID = 987;
     @Version
-    Integer version;
+    private Integer version;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -59,6 +68,8 @@ public class Administrator extends AuditableEntity implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        //If user is deleted from DB, return false as we are using soft delete.
+        //This means that
+        return !this.isDeleted();
     }
 }

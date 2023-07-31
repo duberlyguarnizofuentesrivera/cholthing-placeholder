@@ -34,9 +34,12 @@ public abstract class AuditableEntity implements Serializable {
     @LastModifiedBy
     @Column(columnDefinition = "bigint default 1")
     private Long modifiedBy;
+
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime createdDate;
     @UpdateTimestamp
     private LocalDateTime modifiedDate;
+
+    private boolean deleted=false;
 }

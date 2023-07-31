@@ -10,24 +10,33 @@
 package com.duberlyguarnizo.clothingplaceholder.image;
 
 import com.duberlyguarnizo.clothingplaceholder.audit.AuditableEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
-@Entity
+import java.io.Serial;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
 @Builder
+@Table(name = "image")
+@SQLDelete(sql = "UPDATE image SET deleted = true WHERE id = ? AND version = ?")
+@Where(clause = "deleted = false")
 public class Image extends AuditableEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    Long id;
+    private Long id;
 
-    String path;
+    private String path;
 
-    String name;
+    private String name;
+
+    @Serial
+    private static final long serialVersionUID = 621;
+    @Version
+    private Integer version;
 }
