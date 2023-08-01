@@ -7,11 +7,14 @@
  * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.duberlyguarnizo.clothingplaceholder.image;
+/*
+ -----------------ONLY FOR TESTING PURPOSES!---------------------
+      This file is to be deleted in production.
+ */
 
-import lombok.Builder;
-import org.springframework.core.io.InputStreamResource;
-
-@Builder
-public record ImageQueryDto(Long id, String name, InputStreamResource imageBlob) {
-}
+INSERT INTO public.image (id, created_by, created_date, deleted, modified_by, modified_date, name, path, version)
+VALUES (1, 1, '2023-07-31 21:38:09.000000', false, 1, '2023-07-31 21:38:21.000000', 'ropa deportiva', '1.png', 1)
+ON CONFLICT DO NOTHING;
+INSERT INTO public.image (id, created_by, created_date, deleted, modified_by, modified_date, name, path, version)
+VALUES (2, 1, '2023-07-31 22:29:40.000000', false, 1, '2023-07-31 22:29:47.000000', 'conjunto indú', '2.png', 1)
+ON CONFLICT DO NOTHING;

@@ -9,13 +9,56 @@
 
 package com.duberlyguarnizo.clothingplaceholder.image;
 
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+
+import javax.imageio.ImageIO;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 @RestController
+@RequestMapping("/")
 public class ImageController {
     private final ImageService imageService;
 
     public ImageController(ImageService imageService) {
         this.imageService = imageService;
     }
+
+    @GetMapping(value = "/random", produces = MediaType.IMAGE_PNG_VALUE)
+    public ResponseEntity<byte[]> getRandomBufferedImage(@RequestParam(required = false) Integer w,
+                                                         @RequestParam(required = false) Integer h,
+                                                         @RequestParam(required = false) Integer p) {
+        return imageService.getRandomImage(w, h, p)
+                .map(bufferedImage -> {
+                    try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+                        ImageIO.write(bufferedImage, "png", baos);
+                        return new ResponseEntity<>(baos.toByteArray(), HttpStatus.OK);
+                    } catch (IOException e) {
+                        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error occurred while processing the image", e);
+                    }
+                })
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Image not found"));
+    }
+
+    @GetMapping(value = "/{id}", produces = MediaType.IMAGE_PNG_VALUE)
+    public ResponseEntity<byte[]> getBufferedImage(@PathVariable Long id,
+                                                   @RequestParam(required = false) Integer w,
+                                                   @RequestParam(required = false) Integer h,
+                                                   @RequestParam(required = false) Integer p) {
+        return imageService.getImage(id, w, h, p)
+                .map(bufferedImage -> {
+                    try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+                        ImageIO.write(bufferedImage, "png", baos);
+                        return new ResponseEntity<>(baos.toByteArray(), HttpStatus.OK);
+                    } catch (IOException e) {
+                        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error occurred while processing the image", e);
+                    }
+                })
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Image not found"));
+    }
+
 }
